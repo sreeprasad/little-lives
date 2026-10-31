@@ -10,12 +10,13 @@
         "check": "tsc --noEmit"
     },
     "dependencies": {
-        "durable-actors": "0.14.0"
+        "durable-actors": "0.14.6",
+        "terse-sdk": "0.14.9"
     },
     "devDependencies": {
         "@types/bun": "^1.4.4",
         "@types/node": "^22.0.0",
-        "typescript": "^7.0.2"
+        "typescript": "^5.9.2"
     },
     "trustedDependencies": [
         "esbuild"
