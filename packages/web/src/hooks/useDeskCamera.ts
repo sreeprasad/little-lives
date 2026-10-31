@@ -29,6 +29,7 @@ export function useDeskCamera() {
   const [deviceId, setDeviceId] = useState<string | null>(null)
   const [status, setStatus] = useState<CameraStatus>("idle")
   const [error, setError] = useState<string | null>(null)
+  const [restart, setRestart] = useState(0)
 
   // Ask permission first: device labels are empty until it is granted.
   const start = useCallback(async () => {
@@ -73,7 +74,7 @@ export function useDeskCamera() {
     return () => {
       cancelled = true
     }
-  }, [deviceId])
+  }, [deviceId, restart])
 
   // Re-list cameras when one appears or disappears (e.g. the iPhone wakes up),
   // and switch to the iPhone as soon as it shows up.
@@ -91,6 +92,24 @@ export function useDeskCamera() {
     }
     navigator.mediaDevices.addEventListener("devicechange", refresh)
     return () => navigator.mediaDevices.removeEventListener("devicechange", refresh)
+  }, [status])
+
+  // Keep the preview alive: Safari sometimes pauses or drops the stream.
+  useEffect(() => {
+    if (status !== "live") return
+    const id = setInterval(() => {
+      const v = videoRef.current
+      const stream = streamRef.current
+      if (!v || !stream) return
+      const track = stream.getVideoTracks()[0]
+      if (!track || track.readyState === "ended") {
+        setRestart((n) => n + 1) // stream died: reopen the camera
+        return
+      }
+      if (v.srcObject !== stream) v.srcObject = stream
+      if (v.paused) void v.play().catch(() => { })
+    }, 1000)
+    return () => clearInterval(id)
   }, [status])
 
   // Release the camera when the page unmounts.

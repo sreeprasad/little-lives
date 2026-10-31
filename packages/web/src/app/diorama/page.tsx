@@ -56,6 +56,7 @@ export default function DioramaPage() {
   const [photoUrl, setPhotoUrl] = useState<string | undefined>(STORED_PHOTO)
   const [scanMsg, setScanMsg] = useState("")
   const [vision, setVision] = useState<VisionMode>("none")
+  const [demo, setDemo] = useState(false)
   const scanning = useRef(false)
 
   function showPhoto(url: string | undefined) {
@@ -160,6 +161,7 @@ export default function DioramaPage() {
       if (e.key === "g") setShowGrid((v) => !v)
       if (e.key === "p") setShowStats((v) => !v)
       if (e.key === "t") setTiltShift((v) => !v)
+      if (e.key === "h") setDemo((v) => !v)
     }
     window.addEventListener("keydown", onKey)
     return () => window.removeEventListener("keydown", onKey)
@@ -193,13 +195,17 @@ export default function DioramaPage() {
 
             <div className="pointer-events-none absolute left-4 top-4 space-y-2 font-mono text-xs text-zinc-300">
         <StatusPills socket={status} camera={camera.status} vision={vision} />
-        <div className="text-zinc-500">
-          c scan camera · 1 sample desk · 2 drop coffin · 4 reset · 5 replay · g grid · p fps · t blur
-        </div>
+                {!demo && (
+          <div className="text-zinc-500">
+            c scan camera · 1 sample desk · 2 drop coffin · 4 reset · 5 replay · g grid · p fps · t blur · h demo
+          </div>
+        )}
       </div>
       {/* Camera panel */}
-      <div className="absolute bottom-4 right-4 w-72 space-y-2 rounded-lg bg-zinc-950/85 p-2 font-mono text-xs text-zinc-300 shadow-xl">
-        <video
+            <div
+        className={`absolute bottom-4 right-4 space-y-2 rounded-lg bg-zinc-950/85 p-2 font-mono text-xs text-zinc-300 shadow-xl ${demo ? "w-[30rem]" : "w-72"}`}
+      >
+       <video
           ref={camera.videoRef}
           muted
           playsInline
@@ -213,7 +219,7 @@ export default function DioramaPage() {
             {camera.status === "asking" ? "Waiting for permission…" : "Enable camera"}
           </button>
         )}
-        {camera.devices.length > 0 && (
+        {!demo && camera.devices.length > 0 && (
           <select
             className="w-full rounded bg-zinc-800 px-1 py-1"
             value={camera.deviceId ?? ""}
@@ -226,7 +232,7 @@ export default function DioramaPage() {
             ))}
           </select>
         )}
-        {camera.status === "live" && (
+        {!demo && camera.status === "live" && (
           <button
             className="w-full rounded bg-emerald-800 px-2 py-1.5 hover:bg-emerald-700"
             onClick={() => void scanFromCamera()}
