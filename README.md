@@ -6,6 +6,13 @@ Little Lives turns any ordinary table into a living, haunted world. There's no c
 
 Built in one day at **Haunted Hacks: Real-Time AI Edition** (YC, San Francisco, 31 Oct 2026).
 
+
+
+<img width="3432" height="1868" alt="Screenshot 2026-10-31 at 14 23 43" src="https://github.com/user-attachments/assets/d5c295c5-6f22-4b26-be8c-a07a4f2845f7" />
+
+
+
+
 ▶️ **Watch the demo:**
 https://youtu.be/xpEg6lKRn_s
 
@@ -39,6 +46,9 @@ The skeleton rigs a bone-chain, the zombie digs in, they pull together, the coff
 🧠 **And the world remembers.** Close the tab, reload, restart the agents the haunted world held in its Terse Durable Actor is exactly where you left it.
 
 ---
+
+<img width="3432" height="1868" alt="Screenshot 2026-10-31 at 14 24 01" src="https://github.com/user-attachments/assets/86a3743c-173f-4eb2-aab8-a8e5896a1aa1" />
+
 
 ## Where this goes next
 
