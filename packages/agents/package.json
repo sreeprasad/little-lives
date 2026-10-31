@@ -1,0 +1,20 @@
+{
+  "name": "agents",
+  "module": "index.ts",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "typecheck": "bun check"
+  },
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^7"
+  },
+  "dependencies": {
+    "@agent-relay/sdk": "14.0.0",
+    "durable-actors": "0.14.0",
+    "zod": "^4.6.7"
+  }
+}

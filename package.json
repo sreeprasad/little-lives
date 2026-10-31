@@ -1,0 +1,10 @@
+{
+  "name": "little-lives",
+  "private": true,
+  "workspaces": ["packages/*"],
+  "scripts": {
+    "actors": "cd packages/actors && npx durable-actors dev",
+    "web": "cd packages/web && bun run dev",
+    "agents": "cd packages/agents && bun run src/run-all.ts"
+  }
+}
