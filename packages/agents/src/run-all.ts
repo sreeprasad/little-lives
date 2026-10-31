@@ -31,3 +31,14 @@ setInterval(async () => {
     console.warn("[watchdog]", e instanceof Error ? e.message : e)
   }
 }, 1000)
+
+// Heartbeat to the web app so its status pills show the relay mode.
+const WEB_URL = process.env.WEB_URL ?? "http://localhost:3000"
+const beat = () =>
+  fetch(`${WEB_URL}/api/status`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ mode: bus.mode }),
+  }).catch(() => { })
+void beat()
+setInterval(beat, 5000)

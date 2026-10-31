@@ -7,6 +7,7 @@ import { useDeskCamera } from "@/hooks/useDeskCamera"
 import { useWorldSocket } from "@/hooks/useWorldSocket"
 import { SAMPLE_COFFIN, SAMPLE_ENTITIES, SAMPLE_PHOTO } from "@/lib/sample-world"
 import type { Crisis, Entity } from "@/lib/types"
+import { StatusPills, type VisionMode } from "@/components/StatusPills"
 
 const STORED_PHOTO = "/api/world/photo"
 
@@ -54,6 +55,7 @@ export default function DioramaPage() {
   // Start from whatever photo the persisted world was built from.
   const [photoUrl, setPhotoUrl] = useState<string | undefined>(STORED_PHOTO)
   const [scanMsg, setScanMsg] = useState("")
+  const [vision, setVision] = useState<VisionMode>("none")
   const scanning = useRef(false)
 
   function showPhoto(url: string | undefined) {
@@ -64,6 +66,7 @@ export default function DioramaPage() {
   }
 
   async function loadSampleDesk() {
+    setVision("fallback")
     await worldAction({ action: "scan", entities: SAMPLE_ENTITIES })
     showPhoto(SAMPLE_PHOTO)
     setRevealStart(performance.now())
@@ -72,6 +75,7 @@ export default function DioramaPage() {
   }
 
   async function resetWorld() {
+    setVision("none")
     await worldAction({ action: "reset" })
     await clearPhoto()
     showPhoto(undefined)
@@ -131,6 +135,7 @@ export default function DioramaPage() {
         await storePhoto(await fetch(shot.photoUrl).then((r) => r.blob()))
         showPhoto(shot.photoUrl)
       }
+      setVision(json.fallback ? "fallback" : "live")
       setRevealStart(performance.now())
       setScanMsg(
         `${json.fallback ? "FALLBACK (sample)" : "live"} · ${json.entities.length} objects · ${json.ms}ms${json.error ? ` · ${json.error}` : ""}`,
@@ -186,17 +191,12 @@ export default function DioramaPage() {
         </div>
       )}
 
-      <div className="pointer-events-none absolute left-4 top-4 space-y-1 font-mono text-xs text-zinc-300">
-        <div>
-          <span className={status === "open" ? "text-emerald-400" : "text-amber-400"}>● {status}</span>
-          {"  "}v{snapshot?.version ?? "—"}
-          {"  "}crisis: {snapshot?.crisis.status ?? "—"}
-        </div>
+            <div className="pointer-events-none absolute left-4 top-4 space-y-2 font-mono text-xs text-zinc-300">
+        <StatusPills socket={status} camera={camera.status} vision={vision} />
         <div className="text-zinc-500">
           c scan camera · 1 sample desk · 2 drop coffin · 4 reset · 5 replay · g grid · p fps · t blur
         </div>
       </div>
-
       {/* Camera panel */}
       <div className="absolute bottom-4 right-4 w-72 space-y-2 rounded-lg bg-zinc-950/85 p-2 font-mono text-xs text-zinc-300 shadow-xl">
         <video
